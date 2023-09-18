@@ -1,21 +1,24 @@
 <template>
-  <div class="input-number">{{ currentNumber }}</div>
-  <div class="form-quiz-container">
-    <input class="input-quiz"
-           :class="{ 'input-quiz-wrong-answer': isWrongAnswer }"
-           type="text"
-           v-model="word"
-           @keydown="resetWrongAnswer"
-           @keydown.enter="validateWord" />
-    <div v-if="hint" class="input-hint">
-      <span>Indice : </span>
-      <span>{{ hint }}</span>
+  <div v-if="!finished">
+    <div class="input-number">{{ currentNumber }}</div>
+    <div class="form-quiz-container">
+      <input class="input-quiz"
+             :class="{ 'input-quiz-wrong-answer': isWrongAnswer }"
+             type="text"
+             v-model="word"
+             @keydown="resetWrongAnswer"
+             @keydown.enter="validateWord" />
+      <div v-if="hint" class="input-hint">
+        <span>Indice : </span>
+        <span>{{ hint }}</span>
+      </div>
+      <input class="button-quiz"
+             type="button"
+             value="Envoyer"
+             @click="validateWord" />
     </div>
-    <input class="button-quiz"
-           type="button"
-           value="Envoyer"
-           @click="validateWord" />
   </div>
+  <div v-if="finished" class="finished-message">Bien joué !</div>
   <!-- TODO Miguel : faire un composant -->
   <div class="input-stats">
     {{ numberOfCorrectAnswers }}/{{ totalNumberOfQuestions }}
@@ -24,7 +27,6 @@
     <span class="input-stats-separator"> | </span>
     {{ chronometerMinutes }}:{{ chronometerSeconds }}
   </div>
-  <div v-if="finished">FINI</div>
 </template>
 
 <script>
@@ -45,6 +47,7 @@ export default {
       word: '',
       hint: '',
       numberOfTries: 0,
+      chronometer: null,
       chronometerMinutes: '00',
       chronometerSeconds: '00',
       numberOfCorrectAnswers: 0,
@@ -54,10 +57,7 @@ export default {
     };
   },
   created() {
-    const currentQuizData = this.data[this.currentQuizIndex]?.steps[this.currentQuizStepIndex];
-    this.emitCurrentQuizImage(currentQuizData.image)
-    this.currentQuizAnswers = currentQuizData.answers;
-    this.currentNumber = this.getNextNumber();
+    this.initializeNextStep();
     this.startChronometer();
   },
   computed: {
@@ -82,6 +82,9 @@ export default {
     emitCurrentQuizImage(quizImageName) {
       this.$emit('changeQuizImage', quizImageName);
     },
+    emitError(errorMessage) {
+      this.$emit('error', errorMessage);
+    },
     getNextNumber() {
       const numberMax = this.currentQuizAnswers.length;
       let nextNumber;
@@ -99,7 +102,7 @@ export default {
       return null;
     },
     startChronometer() {
-      setInterval(() => {
+      this.chronometer = setInterval(() => {
         this.chronometerSeconds = parseInt(this.chronometerSeconds) + 1;
 
         if (this.chronometerSeconds < 10) {
@@ -141,19 +144,41 @@ export default {
       return firstCharacter + maskedCharacters + lastCharacter;
     },
     initializeNextStep() {
-      this.currentQuizAnswers = this.data[this.currentQuizIndex];
-      this.processedNumbers = [];
-      this.currentNumber = this.getNextNumber();
-      // TODO Miguel : event pour changer l'image
+      this.emitError('');
+      const currentQuizData = this.data[this.currentQuizIndex]?.steps[this.currentQuizStepIndex];
+
+      if (currentQuizData) {
+        this.emitCurrentQuizImage(currentQuizData.image)
+        this.currentQuizAnswers = currentQuizData.answers;
+        this.processedNumbers = [];
+        this.currentNumber = this.getNextNumber();
+      } else {
+        const quizName = this.data[this.currentQuizIndex]?.name;
+
+        if (quizName) {
+          this.emitError(`⚠️ Les données de l'étape ${this.currentQuizStepIndex} du quiz "${quizName}" sont invalides.`);
+        } else {
+          this.emitError('⚠️ Les données du quiz sont invalides.');
+        }
+      }
+    },
+    finishGame() {
+      clearInterval(this.chronometer);
+      this.finished = true;
     },
     checkIfGamedIsFinished() {
       if (!this.currentNumber) {
-        this.currentQuizIndex += 1;
+        this.currentQuizStepIndex += 1;
 
-        if (this.data[this.currentQuizIndex]) {
+        if (this.currentQuizStepIndex >= this.data[this.currentQuizIndex].steps.length) {
+          this.currentQuizStepIndex = 0;
+          this.currentQuizIndex += 1;
+        }
+
+        if (this.data[this.currentQuizIndex]?.steps[this.currentQuizStepIndex]) {
           this.initializeNextStep();
         } else {
-          this.finished = true;
+          this.finishGame();
         }
       }
     },
@@ -190,7 +215,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .input-stats {
   margin-top: 1.5em;
   text-align: center;
@@ -243,5 +268,10 @@ export default {
 
 .input-quiz, .button-quiz {
   font-size: 1.2em;
+}
+
+.finished-message {
+  font-size: 2em;
+  text-align: center;
 }
 </style>

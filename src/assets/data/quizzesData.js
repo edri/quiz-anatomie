@@ -1,3 +1,4 @@
+// TODO Miguel : décommenter les réponses commentées
 export default [
   {
     name: 'Os',
@@ -7,7 +8,7 @@ export default [
         answers: [
           [ "crâne" ],
           [ "orbite" ],
-          [ "mandibule" ],
+          /* [ "mandibule" ],
           [ "vertèbre cervicale" ],
           [ "acromion" ],
           [ "sternum" ],
@@ -35,14 +36,14 @@ export default [
           [ "radius" ],
           [ "aile iliaque" ],
           [ "grand trochanter" ],
-          [ "petit trochanter" ],
+          [ "petit trochanter" ], */
         ],
       },
       {
         image: 'squelette-anatomie-dos.png',
         answers: [
           [ "atlas" ],
-          [ "vertèbre cervicale" ],
+          /* [ "vertèbre cervicale" ],
           [ "omoplate" ],
           [ "vertèbre dorsale" ],
           [ "côte" ],
@@ -64,7 +65,7 @@ export default [
           [ "condyle interne" ],
           [ "péroné" ],
           [ "malléole externe" ],
-          [ "calcanéum" ],
+          [ "calcanéum" ], */
         ],
       },
     ],
@@ -72,7 +73,7 @@ export default [
   {
     name: 'Muscles',
     steps: [
-      {
+      /* {
         image: 'muscles-vue-face.png',
         answers: [
           [ "sterno hyoïdien" ],
@@ -101,12 +102,12 @@ export default [
           [ "gastrocnémien" ],
           [ "soléaire" ],
         ],
-      },
+      }, */
       {
         image: 'muscles-vue-dos.png',
         answers: [
           [ "trapèze" ],
-          [ "infra épineux" ],
+          /* [ "infra épineux" ],
           [ "petit rond" ],
           [ "grand rond" ],
           [ "grand dorsal" ],
@@ -130,7 +131,7 @@ export default [
           [ "fléchisseur ulnaire du carpe" ],
           [ "long supinateur" ],
           [ "grand adducteur" ],
-          [ "semi-tendineux" ],
+          [ "semi-tendineux" ], */
         ],
       },
     ],

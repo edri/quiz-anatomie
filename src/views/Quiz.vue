@@ -8,7 +8,8 @@
     <div class="input-container">
       <QuizInputs v-if="gameStarted"
                  :data="selectedQuizData"
-                 @changeQuizImage="changeQuizImage" />
+                 @changeQuizImage="changeQuizImage"
+                 @error="handleError" />
       <button v-if="!gameStarted"
               class="button-start"
               @click="startGame">Démarrer</button>
@@ -51,13 +52,16 @@ export default {
       }
     },
     changeQuizImage(quizImageName) {
-      this.currentQuizImage = require('../assets/images/' + quizImageName)
+      this.currentQuizImage = require('../assets/images/' + quizImageName);
+    },
+    handleError(errorMessage) {
+      this.errorMessage = errorMessage;
     },
   },
 }
 </script>
 
-<style>
+<style scoped>
 .quiz-container {
   display: flex;
   justify-content: center;
