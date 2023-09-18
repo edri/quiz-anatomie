@@ -3,7 +3,7 @@ export default [
     name: 'Os',
     steps: [
       {
-        image: '@/assets/schemas/squelette-anatomie-face.png',
+        image: 'squelette-anatomie-face.png',
         answers: [
           [ "crâne" ],
           [ "orbite" ],
@@ -39,7 +39,7 @@ export default [
         ],
       },
       {
-        image: '@/assets/schemas/squelette-anatomie-dos.png',
+        image: 'squelette-anatomie-dos.png',
         answers: [
           [ "atlas" ],
           [ "vertèbre cervicale" ],
@@ -73,7 +73,7 @@ export default [
     name: 'Muscles',
     steps: [
       {
-        image: '@/assets/schemas/muscles-vue-face.png',
+        image: 'muscles-vue-face.png',
         answers: [
           [ "sterno hyoïdien" ],
           [ "sterno cleido mastoidien" ],
@@ -103,7 +103,7 @@ export default [
         ],
       },
       {
-        image: '@/assets/schemas/muscles-vue-dos.png',
+        image: 'muscles-vue-dos.png',
         answers: [
           [ "trapèze" ],
           [ "infra épineux" ],

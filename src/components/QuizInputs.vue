@@ -37,8 +37,9 @@ export default {
   },
   data() {
     return {
-      currentData: [],
-      currentDataIndex: 0,
+      currentQuizAnswers: [],
+      currentQuizIndex: 0,
+      currentQuizStepIndex: 0,
       currentNumber: null,
       processedNumbers: [],
       word: '',
@@ -53,13 +54,19 @@ export default {
     };
   },
   created() {
-    this.currentData = this.data[this.currentDataIndex];
+    const currentQuizData = this.data[this.currentQuizIndex]?.steps[this.currentQuizStepIndex];
+    this.emitCurrentQuizImage(currentQuizData.image)
+    this.currentQuizAnswers = currentQuizData.answers;
     this.currentNumber = this.getNextNumber();
     this.startChronometer();
   },
   computed: {
     totalNumberOfQuestions() {
-      return this.data.reduce((acc, value) => acc + value.length, 0);
+      let numberOfQuestions = 0;
+      for (const quizData of this.data) {
+        numberOfQuestions += quizData.steps.reduce((acc, value) => acc + value.answers.length, 0);
+      }
+      return numberOfQuestions;
     },
     percentageOfCorrectAnswers() {
       const totalNumberOfAnswers = this.numberOfCorrectAnswers + this.numberOfWrongAnswers;
@@ -72,11 +79,14 @@ export default {
     },
   },
   methods: {
+    emitCurrentQuizImage(quizImageName) {
+      this.$emit('changeQuizImage', quizImageName);
+    },
     getNextNumber() {
-      const numberMax = this.currentData.length;
+      const numberMax = this.currentQuizAnswers.length;
       let nextNumber;
 
-      if (this.processedNumbers.length < this.currentData.length) {
+      if (this.processedNumbers.length < this.currentQuizAnswers.length) {
         do {
           nextNumber = Math.floor(Math.random() * numberMax) + 1;
         } while (this.processedNumbers.includes(nextNumber))
@@ -131,16 +141,16 @@ export default {
       return firstCharacter + maskedCharacters + lastCharacter;
     },
     initializeNextStep() {
-      this.currentData = this.data[this.currentDataIndex];
+      this.currentQuizAnswers = this.data[this.currentQuizIndex];
       this.processedNumbers = [];
       this.currentNumber = this.getNextNumber();
       // TODO Miguel : event pour changer l'image
     },
     checkIfGamedIsFinished() {
       if (!this.currentNumber) {
-        this.currentDataIndex += 1;
+        this.currentQuizIndex += 1;
 
-        if (this.data[this.currentDataIndex]) {
+        if (this.data[this.currentQuizIndex]) {
           this.initializeNextStep();
         } else {
           this.finished = true;
@@ -149,7 +159,7 @@ export default {
     },
     validateWord() {
       if (this.word.length) {
-        const answers = this.currentData[this.currentNumber - 1];
+        const answers = this.currentQuizAnswers[this.currentNumber - 1];
 
         if (answers.includes(this.word)) {
           this.word = '';

@@ -1,22 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Os from '../views/Os.vue'
-import Muscles from '../views/Muscles.vue'
+import Quiz from '../views/Quiz.vue'
 
 const routes = [
   {
     path: '/',
-    redirect: '/os',
+    name: 'Quiz',
+    component: Quiz
   },
-  {
-    path: '/os',
-    name: 'Os',
-    component: Os
-  },
-  {
-    path: '/muscles',
-    name: 'Muscles',
-    component: Muscles
-  }
 ]
 
 const router = createRouter({
