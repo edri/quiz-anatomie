@@ -1,5 +1,7 @@
 # quiz-anatomie
 
+Système de quiz dynamiques pour apprendre l'anatomie (basé sur les données de espace-musculation.com et le système de quiz de geoguessr.com).
+
 ## Project setup
 ```
 yarn install
